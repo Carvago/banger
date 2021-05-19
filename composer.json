@@ -1,0 +1,7 @@
+{
+    "name": "carvago/banger",
+    "description": "Bank account validation library",
+    "type": "library",
+    "license": "MIT",
+    "require": {}
+}
