@@ -3,5 +3,10 @@
     "description": "Bank account validation library",
     "type": "library",
     "license": "MIT",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Eag\\Banger\\": "src/"
+        }
+    }
 }
