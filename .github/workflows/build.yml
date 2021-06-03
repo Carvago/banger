@@ -1,0 +1,29 @@
+name: Banger pipeline
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP with PCOV
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: bcmath
+          tools: php-cs-fixer, phpunit, phpstan
+          # ini-values: pcov.directory=api #optional, see above for usage.
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer install --prefer-dist
+
+      - name: Run Tests
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml src
+
+      - name: Code coverage
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-text src
+
+      - name: Run PHPStan
+        run: phpstan analyse src

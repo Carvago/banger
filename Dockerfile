@@ -5,11 +5,11 @@ WORKDIR /app/
 
 COPY composer.* ./
 
-RUN composer install --no-dev
+RUN composer install --no-dev --ignore-platform-reqs --no-suggest --no-progress
 
 FROM build-prod as build-dev
 
-RUN composer install
+RUN composer install --ignore-platform-reqs --no-suggest --no-progress
 
 FROM php:8.0-cli as php-dev
 

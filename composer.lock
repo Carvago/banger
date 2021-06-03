@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8518b2962185c51b9714e2d525623497",
+    "content-hash": "7798a7102c8fb649f30f0fe53e514eac",
     "packages": [
         {
             "name": "thecodingmachine/safe8",
@@ -2242,7 +2242,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-bcmath": "*"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }
