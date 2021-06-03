@@ -1,12 +1,19 @@
 {
-    "name": "carvago/banger",
-    "description": "Bank account validation library",
-    "type": "library",
-    "license": "MIT",
-    "require": {},
-    "autoload": {
-        "psr-4": {
-            "Eag\\Banger\\": "src/"
-        }
+  "name": "carvago/banger",
+  "description": "Bank account validation library",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "thecodingmachine/safe8": "^0.1.0",
+    "ext-bcmath": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Eag\\Banger\\": "src/",
+      "Eag\\Banger\\Test\\": "test/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
 }
