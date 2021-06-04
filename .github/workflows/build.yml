@@ -20,10 +20,10 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Run Tests
-        run: vendor/bin/phpunit --configuration=test/phpunit.xml src
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml test
 
       - name: Code coverage
-        run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-text src
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-text test
 
       - name: Run PHPStan
         run: phpstan analyse src
