@@ -26,4 +26,4 @@ jobs:
         run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-text test
 
       - name: Run PHPStan
-        run: phpstan analyse src
+        run: phpstan analyse --level=6 src
