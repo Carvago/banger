@@ -4,3 +4,7 @@ composer.phar
 
 # IDEA / PhpStorm
 .idea
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache

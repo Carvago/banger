@@ -17,12 +17,12 @@
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
+    <coverage cacheDirectory=".phpunit.cache/code-coverage"
+              processUncoveredFiles="true">
         <include>
-            <directory suffix=".php">src/</directory>
+            <directory suffix=".php">../src</directory>
         </include>
     </coverage>
-
     <php>
         <env name="APP_ENV" value="testing"/>
     </php>
