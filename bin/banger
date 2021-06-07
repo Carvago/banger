@@ -1,0 +1,113 @@
+#!/bin/bash
+
+projectDir=$(dirname "$(dirname "$(readlink -f $0)")")
+
+main() {
+  if (($# == 0)); then
+    help
+    exit
+  fi
+
+  job="$1"
+  shift
+  case "$job" in
+  b | bang | all) job_cs --fix && job_phpstan && job_phpunit ;;
+  c | composer) job_composer "$@" ;;
+  cs) job_cs "$@" ;;
+  cs-fix) job_cs --fix "$@" ;;
+  pstan | phpstan) job_phpstan "$@" ;;
+  t | test | phpunit) job_phpunit "$@" ;;
+  *) help "$@" ;;
+  esac
+}
+
+job_cs() {
+  echo "✨ cs"
+
+  buildImage php-dev eag/banger:php-dev
+
+  assertVendorExists
+  dockerRun eag/banger:php-dev vendor/bin/ecs check src "$@"
+}
+
+job_phpstan() {
+  echo "👮 phpstan"
+
+  buildImage php-dev eag/banger:php-dev
+
+  assertVendorExists
+  dockerRun eag/banger:php-dev vendor/bin/phpstan analyse --level=8 src test
+}
+
+job_phpunit() {
+  echo "🧪 phpunit"
+
+  buildImage php-dev eag/banger:php-dev
+
+  assertVendorExists
+  dockerRun eag/banger:php-dev vendor/bin/phpunit --configuration=test/phpunit.xml  --coverage-text
+}
+
+job_composer() {
+  echo "🧶 composer"
+
+  buildImage composer eag/banger:composer
+  dockerRun eag/banger:composer composer --no-cache "$@"
+}
+
+dockerRun() {
+  assertDockerInstalled
+
+  docker run --rm --interactive --tty \
+    --volume $projectDir:/app \
+    --user "$(id -u):$(id -g)" \
+    "$@"
+}
+
+buildImage() {
+  assertDockerInstalled
+
+  target="$1"
+  shift
+  tag="$1"
+  shift
+
+  if ! docker image inspect "$@" "$tag" &>/dev/null; then
+    echo "Building new $tag"
+    if docker build --target "$target" --tag "$tag" "$projectDir"; then
+      echo "Built $tag"
+    else
+      echo "🎱 Failed building $tag"
+    fi
+  fi
+}
+
+isDockerInstalled() {
+  command -v docker &>/dev/null
+}
+
+assertVendorExists() {
+  if [[ ! -d "$projectDir/vendor" ]]; then
+    echo "🎱 vendor folder not found (try 'banger composer install')"
+    exit 1
+  fi
+}
+
+assertDockerInstalled() {
+  if ! isDockerInstalled; then
+    echo "🎱 Docker command not found"
+    exit 1
+  fi
+}
+
+help() {
+  echo "banger"
+  echo "  b|bang|a|all   - cs-fix + phpstan + test"
+  echo "  c|composer     - Run composer"
+  echo "  cs             - Validate code style"
+  echo "  cs-fix         - Try to fix code style violations"
+  echo "  pstan|phpstan  - Find bugs and errors with phpstan"
+  echo "  t|test|phpunit - Run unit tests via phpunit"
+}
+
+main "$@"
