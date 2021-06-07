@@ -1,0 +1,82 @@
+name: Banger pipeline
+on: [ push ]
+jobs:
+
+  cs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: bcmath
+
+      - name: Composer
+        run: composer install --prefer-dist
+
+      - name: CodeSniffer
+        run: vendor/bin/ecs check src
+
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: bcmath
+
+      - name: Composer
+        run: composer install --prefer-dist
+
+      - name: Phpstan
+        run: vendor/bin/phpstan analyse --level=8 src test
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # php-versions: [ '8.0', '8.1' ] Phpunits dependencies are not compatible with php 8.1
+        php-versions: [ '8.0' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: bcmath
+
+      - name: Composer
+        run: composer install --prefer-dist
+
+      - name: Phpunit
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml test
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: bcmath
+          # ini-values: pcov.directory=api #optional, see above for usage.
+          coverage: pcov
+
+      - name: Composer
+        run: composer install --prefer-dist
+
+      - name: Code coverage
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-text test

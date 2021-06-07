@@ -97,13 +97,13 @@ final class CzechBankAccountIdentifierValidator implements NationalBankAccountId
 
             try {
                 $ibanBankAccountNumber = self::extractBankAccountNumberFromIban($iban);
-            } catch (StringsException $e) {
+            } catch (StringsException) {
                 throw InvalidBankAccountIdentifierIban::create($bankAccount, $iban);
             }
 
             if (self::normalizeBankAccountNumber($bankAccount->number) !== self::normalizeBankAccountNumber(
-                    $ibanBankAccountNumber
-                )) {
+                $ibanBankAccountNumber
+            )) {
                 throw InvalidBankAccountIdentifierIban::create($bankAccount, $iban);
             }
         }
@@ -134,7 +134,7 @@ final class CzechBankAccountIdentifierValidator implements NationalBankAccountId
     {
         $iban = substr($iban, 4) . substr($iban, 0, 2) . '00';
         $digits = array_map(
-            fn($c) => ctype_alpha($c) ? (string)(ord($c) - ord('A') + 10) : $c,
+            fn ($c) => ctype_alpha($c) ? (string)(ord($c) - ord('A') + 10) : $c,
             str_split($iban)
         );
 

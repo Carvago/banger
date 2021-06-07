@@ -27,8 +27,8 @@ final class PhpBankAccountValidator implements BankAccountValidator
     {
         // TODO: Probably should not be a logic exception
         $validator = $this->nationalBankAccountValidators[$country] ?? throw new LogicException(
-                "Missing NationalBankAccountValidator for country {$country}"
-            );
+            "Missing NationalBankAccountValidator for country {$country}"
+        );
 
         $validator->validate($bankAccount);
     }

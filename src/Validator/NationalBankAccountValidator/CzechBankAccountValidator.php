@@ -107,6 +107,6 @@ final class CzechBankAccountValidator implements NationalBankAccountValidator
         $weights = [6, 3, 7, 9, 10, 5, 8, 4, 2, 1];
         $digits = array_map('intval', str_split($input));
 
-        return array_sum(array_map(fn(int $weight, int $digit): int => $weight * $digit, $weights, $digits));
+        return array_sum(array_map(static fn (int $weight, int $digit): int => $weight * $digit, $weights, $digits));
     }
 }
