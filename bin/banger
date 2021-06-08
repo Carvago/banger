@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
-projectDir=$(dirname "$(dirname "$(readlink -f $0)")")
+projectDir=$(dirname "$(dirname "$(readlink -f "$0")")")
 
 main() {
-  if (($# == 0)); then
+  if [ $# -eq 0 ]; then
     help
     exit
   fi
@@ -59,7 +59,7 @@ dockerRun() {
   assertDockerInstalled
 
   docker run --rm --interactive --tty \
-    --volume $projectDir:/app \
+    --volume "$projectDir":/app \
     --user "$(id -u):$(id -g)" \
     "$@"
 }
@@ -72,7 +72,7 @@ buildImage() {
   tag="$1"
   shift
 
-  if ! docker image inspect "$@" "$tag" &>/dev/null; then
+  if ! docker image inspect "$@" "$tag" >/dev/null 2>&1; then
     echo "Building new $tag"
     if docker build --target "$target" --tag "$tag" "$projectDir"; then
       echo "Built $tag"
@@ -83,11 +83,11 @@ buildImage() {
 }
 
 isDockerInstalled() {
-  command -v docker &>/dev/null
+  command -v docker >/dev/null 2>&1
 }
 
 assertVendorExists() {
-  if [[ ! -d "$projectDir/vendor" ]]; then
+  if [ ! -d "$projectDir/vendor" ]; then
     echo "🎱 vendor folder not found (try 'banger composer install')"
     exit 1
   fi
