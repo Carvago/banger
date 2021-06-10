@@ -79,4 +79,9 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Code coverage
-        run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-text test
+        run: vendor/bin/phpunit --configuration=test/phpunit.xml --coverage-clover ./coverage.xml --coverage-text test
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./coverage.xml
